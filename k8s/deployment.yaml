@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bonos-service-deployment
+  namespace: default
+  labels:
+    app: bonos-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: bonos-service
+  template:
+    metadata:
+      labels:
+        app: bonos-service
+    spec:
+      containers:
+      - name: bonos-service
+        image: bonos-service:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8004
+        resources:
+          requests:
+            cpu: "100m"
