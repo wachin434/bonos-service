@@ -16,11 +16,30 @@ spec:
         app: bonos-service
     spec:
       containers:
-      - name: bonos-service
-        image: bonos-service:latest
-        imagePullPolicy: Always
-        ports:
-        - containerPort: 8004
-        resources:
-          requests:
-            cpu: "100m"
+        - name: bonos-service
+          image: bonos-service:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8004
+          envFrom:
+            - secretRef:
+                name: bonos-service-secrets
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: 8004
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: 8004
+            initialDelaySeconds: 10
+            periodSeconds: 15
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
